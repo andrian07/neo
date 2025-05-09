@@ -1,0 +1,71 @@
+.imgArea, .imgArea2 {
+    position: relative;
+    display: flex
+    ;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+    padding: 15px;
+    height: 270px;
+    background-color: rgb(242, 242, 242);
+    border-radius: 10px;
+  }
+  .selectImage, .selectImage2 {
+    margin-top: 10px;
+    padding: 10px 15px;
+    border-radius: 10px;
+    width: 100%;
+    background-color: #000000;
+    color: #ffffff;
+  }
+
+  .js-example-basic-single{
+    z-index: 999!important;
+  }
+
+  .select2-container {
+    display: block !important;
+  }
+  span.select2-selection.select2-selection--single {
+    height: 38px;
+  }
+
+  .imgArea img, .imgArea2 img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 10px;
+    z-index: 3;
+}
+
+.hide-permission {
+    display: none;
+}
+
+.form-group {
+    margin-bottom: 5px !important;
+}
+
+.label-insert{
+    font-size: 0.9em;
+    padding: 0!important;
+}
+
+label.col-sm-1.text-right.label-insert {
+    padding-top: 8px !important;
+}
+
+.well {
+    border: 1px solid #ddd;
+    background-color: #f6f6f6;
+    box-shadow: none;
+    border-radius: 0px;
+    padding: 10px;
+    margin-bottom: 50px;
+}
