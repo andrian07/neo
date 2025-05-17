@@ -50,7 +50,6 @@ require DOC_ROOT_PATH . $this->config->item('header');
             <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" disabled><i class="fas fa-plus"></i> Tambah</button>
           <?php } ?>
 
-
           <div class="modal fade bd-example-modal-xl" id="exampleModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl" role="document">
               <div class="modal-content">
@@ -306,6 +305,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
       </div>
     </div>
     <div class="card-body">
+      <?php /*
       <table id="example" class="table table-bordered" style="width:100%">
         <thead>
           <tr>
@@ -350,13 +350,29 @@ require DOC_ROOT_PATH . $this->config->item('header');
           <?php } ?>
         </tbody>
       </table>
+      */ ?>
+      <table id="product-list" class="display table table-striped table-hover">
+        <thead>
+          <tr>
+            <th>Nama Product</th>
+            <th>Brand</th>
+            <th>Kategori</th>
+            <th>Min Stok</th>
+            <th>PPN</th>
+            <th>Gambar</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
     </div>
     <!-- /.card-body -->
     <!-- /.card-footer-->
   </div>
 
 
-  <!-- /.card -->
+<!-- /.card -->
 
 </section>
 <!-- /.content -->
@@ -370,44 +386,34 @@ require DOC_ROOT_PATH . $this->config->item('footer');
 
 
 <script>
-  var tabel = null;
   $(document).ready(function() {
-    tabel = $('#table-artikel').DataTable({
-      "processing": true,
-      "responsive":true,
-      "serverSide": true,
-            "ordering": true, // Set true agar bisa di sorting
-            "order": [[ 0, 'asc' ]], // Default sortingnya berdasarkan kolom / field ke 0 (paling pertama)
-            "ajax":
-            {
-                "url": "<?= base_url('datatables/view_data');?>", // URL file untuk proses select datanya
-                "type": "POST"
-              },
-              "deferRender": true,
-            "aLengthMenu": [[5, 10, 50],[ 5, 10, 50]], // Combobox Limit
-            "columns": [
-            {"data": 'id_artikel',"sortable": false, 
-            render: function (data, type, row, meta) {
-              return meta.row + meta.settings._iDisplayStart + 1;
-            }  
-          },
-                { "data": "judul" }, // Tampilkan judul
-                { "data": "kategori" },  // Tampilkan kategori
-                { "data": "penulis" },  // Tampilkan penulis
-                { "data": "tgl_posting" },  // Tampilkan tgl posting
-                { "data": "id_artikel",
-                "render": 
-                function( data, type, row, meta ) {
-                  return '<a href="show/'+data+'">Show</a>';
-                }
-              },
-              ],
-            });
+    purchaseorder_table();
   });
-</script>
 
-
-<script type="text/javascript">
+  function purchaseorder_table(){
+    $('#product-list').DataTable( {
+      serverSide: true,
+      search: true,
+      processing: true,
+      ordering: false,
+      retrieve: true,
+      ajax: {
+        url: '<?php echo base_url(); ?>Masterdata/product_list',
+        type: 'POST',
+        data:  {},
+      },
+      columns: 
+      [
+        {data: 0},
+        {data: 1},
+        {data: 2},
+        {data: 3},
+        {data: 4},
+        {data: 5},
+        {data: 6}
+      ]
+    });
+  }
   function deletes(id, code){
     Swal.fire({
       title: 'Konfirmasi?',
@@ -495,17 +501,17 @@ require DOC_ROOT_PATH . $this->config->item('footer');
 
   /* image uplaod */
   const fileTypes = [
-  "image/apng",
-  "image/bmp",
-  "image/gif",
-  "image/jpeg",
-  "image/pjpeg",
-  "image/png",
-  "image/svg+xml",
-  "image/tiff",
-  "image/webp",
-  "image/x-icon",
-  "image/avif",
+    "image/apng",
+    "image/bmp",
+    "image/gif",
+    "image/jpeg",
+    "image/pjpeg",
+    "image/png",
+    "image/svg+xml",
+    "image/tiff",
+    "image/webp",
+    "image/x-icon",
+    "image/avif",
   ];
   function validFileType(file) {
     return fileTypes.includes(file.type);

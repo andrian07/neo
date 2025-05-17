@@ -76,14 +76,18 @@ class Sales extends CI_Controller {
 		$customer_id     				= $this->input->post('customer_id');
 		$no_hp        					= $this->input->post('no_hp');
 		$address   	   	   				= $this->input->post('address');
+		$ekspedisi   	   	   			= $this->input->post('ekspedisi');
 		$payment_id           			= $this->input->post('payment_id');
 		$sales_id						= $this->input->post('sales_id');
 		$send_date 						= $this->input->post('send_date');
 		$type 							= $this->input->post('type');
 		$due_date    					= $this->input->post('due_date');
 		$sendtype 						= $this->input->post('sendtype');
+		$sales_remark 					= $this->input->post('sales_remark');
 		$footer_discount_submit 		= $this->input->post('footer_discount_submit');
 		$footer_sub_total_submit 		= $this->input->post('footer_sub_total_submit');
+		$footer_discount_nota_submit 	= $this->input->post('footer_discount_nota_submit');
+		$footer_ongkir_submit 			= $this->input->post('footer_ongkir_submit');
 		$footer_total_ppn_submit 		= $this->input->post('footer_total_ppn_submit');
 		$footer_total_invoice_submit	= $this->input->post('footer_total_invoice_submit');
 		$footer_dp_submit 				= $this->input->post('footer_dp_submit');
@@ -122,14 +126,18 @@ class Sales extends CI_Controller {
 			'hd_sales_date'	    		=> $date,
 			'hd_sales_customer'	    	=> $customer_id,
 			'hd_sales_address'	    	=> $address,
+			'hd_sales_ekspedisi'	    => $ekspedisi,
 			'hd_sales_phone'	    	=> $no_hp,
 			'hd_sales_payment_type'	    => $payment_id,
 			'hd_sales_sales'	       	=> $sales_id,
 			'hd_delivery_status'		=> $status_send,
 			'hd_sales_send_date'	    => $send_date,
 			'hd_sales_due_date'	    	=> $due_date,
+			'hd_sales_remark'			=> $sales_remark,
 			'hd_sales_subtotal'	       	=> $footer_sub_total_submit,
 			'hd_sales_discount'	        => $footer_discount_submit,
+			'hd_sales_discount_nota'	=> $footer_discount_nota_submit,
+			'hd_sales_ongkir'			=> $footer_ongkir_submit,
 			'hd_sales_ppn'	    		=> $footer_total_ppn_submit,
 			'hd_sales_total'			=> $footer_total_invoice_submit,
 			'hd_sales_dp'	       		=> $footer_dp_submit,
@@ -248,15 +256,15 @@ class Sales extends CI_Controller {
 		}else{
 			$result = ['success' => FALSE, 'num_product' => 0, 'data' => [], 'message' => ''];
 			if (!($keyword == '' || $keyword == NULL)) {
-				$find = $this->sales_model->search_product($keyword); 
+				$find = $this->sales_model->search_product($keyword)->result_array(); 
 				$find_result = [];
 				foreach ($find as $row) {
-					$diplay_text = $row->item_name;
+					$diplay_text = $row['item_name'];
 					$find_result[] = [
-						'id'                  => $row->item_id,
+						'id'                  => $row['item_id'],
 						'value'               => $diplay_text,
-						'sales_price'         => $row->item_price_1,
-						'modal_price'         => $row->item_cogs,
+						'sales_price'         => $row['item_price_3'],
+						'modal_price'         => $row['item_cogs'],
 					];
 				}
 				$result = ['success' => TRUE, 'num_product' => count($find_result), 'data' => $find_result, 'message' => ''];

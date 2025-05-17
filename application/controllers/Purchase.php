@@ -94,14 +94,14 @@ class Purchase extends CI_Controller {
 		}else{
 			$result = ['success' => FALSE, 'num_product' => 0, 'data' => [], 'message' => ''];
 			if (!($keyword == '' || $keyword == NULL)) {
-				$find = $this->purchase_model->search_product_supplier($keyword, $supplier_id); 
+				$find = $this->purchase_model->search_product_supplier($keyword, $supplier_id)->result_array(); 
 				$find_result = [];
 				foreach ($find as $row) {
-					$diplay_text = $row->item_name;
+					$diplay_text = $row['item_name'];
 					$find_result[] = [
-						'id'                  => $row->item_id,
+						'id'                  => $row['item_id'],
 						'value'               => $diplay_text,
-						'purchase_price'      => $row->item_cogs,
+						'purchase_price'      => $row['item_cogs'],
 					];
 				}
 				$result = ['success' => TRUE, 'num_product' => count($find_result), 'data' => $find_result, 'message' => ''];

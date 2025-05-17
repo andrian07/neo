@@ -39,7 +39,7 @@
                         <div class="card-body" style="text-align:center;" >
                             <div class="row">
                                 <div class="col-md-6">
-                                    <img src="<?php echo base_url(); ?>dist/img/logo.png" width="100%">
+                                    <img src="<?php echo base_url(); ?>dist/img/logo.png" width="50%">
                                 </div>
                                 <div class="col-md-6">
                                     <?php echo $row->item_barcode ?>

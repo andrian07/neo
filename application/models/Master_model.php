@@ -288,16 +288,62 @@ class master_model extends CI_Model {
         return $result;
     }
 
-    public function search_product_list($searchin_key)
+    public function product_list_data($search, $length, $start)
     {
+
+        $this->db->select('*, supplier_name AS supplier_name_group');
+        $this->db->from('ms_product');
+        $this->db->join('ms_brand', 'ms_product.brand_id = ms_brand.brand_id');
+        $this->db->join('ms_category', 'ms_product.category_id = ms_category.category_id');
+        $this->db->join('ms_unit', 'ms_product.unit_id = ms_unit.unit_id');
+        $this->db->join('ms_product_supplier', 'ms_product.product_code = ms_product.product_code');
+        $this->db->join('ms_supplier', 'ms_product_supplier.supplier_id = ms_supplier.supplier_id');
+        $this->db->where('ms_product.is_active', 'Y');
+        if($search != null){
+            $this->db->or_where('product_name like "%'.$search.'%"');
+            $this->db->or_where('product_code like "%'.$search.'%"');
+        }
+        $this->db->group_by('ms_product.product_code');
+        $this->db->order_by('ms_product.product_id');
+        $this->db->limit($length);
+        $this->db->offset($start);
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function product_list_data_count($search)
+    {
+        $this->db->select('count(*) as total_row');
+        $this->db->from('ms_product');
+        $this->db->join('ms_brand', 'ms_product.brand_id = ms_brand.brand_id');
+        $this->db->join('ms_category', 'ms_product.category_id = ms_category.category_id');
+        $this->db->join('ms_unit', 'ms_product.unit_id = ms_unit.unit_id');
+        $this->db->join('ms_product_supplier', 'ms_product.product_code = ms_product.product_code');
+        $this->db->join('ms_supplier', 'ms_product_supplier.supplier_id = ms_supplier.supplier_id');
+        $this->db->where('ms_product.is_active', 'Y');
+        if($search != null){
+            $this->db->or_where('product_name like "%'.$search.'%"');
+            $this->db->or_where('product_code like "%'.$search.'%"');
+        }
+        $this->db->group_by('ms_product.product_code');
+        $this->db->order_by('ms_product.product_id');
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function search_product_list($searchin_key)
+    {   
+        $search_value = explode(" ",$searchin_key);
         $this->db->select('*');
         $this->db->from('ms_product_detail');
         $this->db->join('ms_product', 'ms_product_detail.product_code = ms_product.product_code');
         $this->db->join('ms_unit', 'ms_product.unit_id = ms_unit.unit_id');
         $this->db->where('ms_product_detail.item_active', 'y');
         if($searchin_key != null){
-            $this->db->where('ms_product_detail.item_name like "%'.$searchin_key.'%"');
-            $this->db->or_where('ms_product_detail.item_barcode like "%'.$searchin_key.'%"');
+            foreach ($search_value as $row) {
+                $this->db->where('ms_product_detail.item_name like "%'.$row.'%"');
+                $this->db->or_where('ms_product_detail.item_barcode like "%'.$row.'%"');
+            }
         }
         $this->db->limit(50);
         $query = $this->db->get();

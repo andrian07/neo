@@ -48,12 +48,29 @@ class purchase_model extends CI_Model {
         return $result;
     }
 
-    public function search_product_supplier($keyword, $supplier_id)
+      public function search_product_supplier($keyword, $supplier_id){
+        $search_value = explode(" ",$keyword);
+        $this->db->select('*');
+        $this->db->from('ms_product_supplier');
+        $this->db->join('ms_product_detail', 'ms_product_supplier.product_code = ms_product_detail.product_code');
+        $this->db->join('ms_supplier', 'ms_product_supplier.supplier_id = ms_supplier.supplier_id');
+        if($keyword != null){
+            foreach ($search_value as $row) {
+                $this->db->where('item_name like "%'.$row.'%"');
+                $this->db->or_where('item_barcode like "%'.$row.'%"');
+            }
+            $this->db->or_where('ms_supplier.supplier_id like "%'.$supplier_id.'%"');
+        }
+        $query = $this->db->get();
+        return $query;
+    }
+
+    /*public function search_product_supplier($keyword, $supplier_id)
     {
         $query = $this->db->query("select * from ms_product_supplier a, ms_product_detail b, ms_supplier c where a.product_code = b.product_code and a.supplier_id = c.supplier_id and b.item_name like '%".$keyword."%' and c.supplier_id = '".$supplier_id."'");
         $result = $query->result();
         return $result;
-    }
+    }*/
 
     public function delete_temp_po($id, $userid)
     {

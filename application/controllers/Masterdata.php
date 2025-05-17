@@ -562,6 +562,47 @@ class Masterdata extends CI_Controller {
 	// Product //
 
 
+	public function product_list(){
+		$search 			= $this->input->post('search');
+		$length 			= $this->input->post('length');
+		$start 			  	= $this->input->post('start');
+
+		if($search != null){
+			$search = $search['value'];
+		}
+		$list = $this->master_model->product_list_data($search, $length, $start)->result_array();
+		$count_list = $this->master_model->product_list_data_count($search)->result_array();
+		$total_row = $count_list[0]['total_row'];
+		$data = array();
+		$no = $_POST['start'];
+		foreach ($list as $field) {
+
+			$edit = '<button class="btn btn-sm btn-warning" data-toggle="modal" data-id="'.$field['product_id'].'" data-target="#exampleModaledit"><i class="fas fa-edit"></i></button>';
+			$delete = '<button class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="top" data-title="Hapus" data-original-title="" title="" onclick="deletes('.$field['product_id'].', '.$field['product_code'].')"><i class="fas fa-trash"></i></button>';
+			$cogs = '<button class="btn btn-sm btn-info" data-toggle="tooltip" data-placement="top" data-title="Pengaturan Produk" onclick="insert_detail_product('.$field['product_id'].')"><i class="fas fa-cog"></i></button>';
+
+			$image = '<img src="'.$field['product_picture'].'assets/products/'.$field['product_picture'].'" width="80px" height="60px"/>';
+			$no++;
+			$row = array();
+			$row[] 	= $field['product_name'];
+			$row[] 	= $field['brand_name'];
+			$row[] 	= $field['category_name'];
+			$row[] 	= $field['min_stock'];
+			$row[] 	= $field['ppn'];
+			$row[] 	= $image;
+			$row[] 	= $edit.$delete.$cogs;
+			$data[] = $row;
+		}
+
+		$output = array(
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $total_row,
+			"recordsFiltered" => $total_row,
+			"data" => $data,
+		);
+		echo json_encode($output);
+	}
+
 	public function product()
 	{
 

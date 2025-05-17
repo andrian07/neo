@@ -148,6 +148,13 @@ require DOC_ROOT_PATH . $this->config->item('header');
             </select>
           </div>
         </div>
+
+        <div class="form-group row">
+          <label for="address" class="col-sm-1 text-right label-insert">Ekspedisi:</label>
+          <div class="col-sm-3">
+            <input id="ekspedisi" type="text" class="form-control" value="">
+          </div>
+        </div>
         
 
       </div>
@@ -269,13 +276,13 @@ require DOC_ROOT_PATH . $this->config->item('header');
           <div class="col-lg-6">
             <div class="form-group">
               <div class="col-sm-12">
-
+                <textarea id="sales_remark" name="sales_remark" class="form-control" placeholder="Catatan" maxlength="500" rows="3"></textarea>
               </div>
             </div>
           </div>
 
           <div class="col-lg-6 text-right">
-            <div class="form-group row">
+            <div class="form-group row" style="display:none;">
               <label for="footer_discount" class="col-sm-7 col-form-label text-right:">Total Diskon:</label>
               <div class="col-sm-5">
                 <input id="footer_discount" name="footer_discount" type="text" class="form-control text-right curency3" value="0" readonly="">
@@ -288,6 +295,22 @@ require DOC_ROOT_PATH . $this->config->item('header');
                 <input id="footer_sub_total" name="footer_sub_total" type="text" class="form-control text-right curency3" value="0" readonly="">
               </div>
             </div>
+
+            <div class="form-group row">
+              <label for="footer_sub_total" class="col-sm-7 col-form-label text-right:">Diskon Nota:</label>
+              <div class="col-sm-5">
+                <input id="footer_discount_nota" name="footer_discount_nota" type="text" class="form-control text-right curency3" value="0">
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="footer_sub_total" class="col-sm-7 col-form-label text-right:">Ongkir:</label>
+              <div class="col-sm-5">
+                <input id="footer_ongkir" name="footer_ongkir" type="text" class="form-control text-right curency3" value="0">
+              </div>
+            </div>
+
+
 
             <div class="form-group row">
               <label for="footer_total_ppn" class="col-sm-7 col-form-label text-right:">PPN 11% :</label>
@@ -376,6 +399,22 @@ require DOC_ROOT_PATH . $this->config->item('footer');
   });
 
   let temp_total = new AutoNumeric('#temp_total', {
+    currencySymbol : 'Rp. ',
+    decimalCharacter : ',',
+    decimalPlaces: 0,
+    decimalPlacesShownOnFocus: 0,
+    digitGroupSeparator : '.',
+  });
+
+  let footer_ongkir = new AutoNumeric('#footer_ongkir', {
+    currencySymbol : 'Rp. ',
+    decimalCharacter : ',',
+    decimalPlaces: 0,
+    decimalPlacesShownOnFocus: 0,
+    digitGroupSeparator : '.',
+  });
+
+  let footer_discount_nota = new AutoNumeric('#footer_discount_nota', {
     currencySymbol : 'Rp. ',
     decimalCharacter : ',',
     decimalPlaces: 0,
@@ -520,14 +559,18 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       var customer_id                   = $("#customer_id").val();
       var no_hp                         = $("#no_hp").val();
       var address                       = $("#address").val();
+      var ekspedisi                     = $("#ekspedisi").val();
       var payment_id                    = $("#payment_id").val();
       var sales_id                      = $("#sales_id").val();
       var send_date                     = $("#send_date").val();
       var type                          = $("#type").val();
       var due_date                      = $("#due_date").val();
       var sendtype                      = $("#sendtype").val();
+      var sales_remark                  = $("#sales_remark").val();
       var footer_discount_submit        = footer_discount.get();
       var footer_sub_total_submit       = footer_sub_total.get();
+      var footer_discount_nota_submit   = footer_discount_nota.get();
+      var footer_ongkir_submit          = footer_ongkir.get();
       var footer_total_ppn_submit       = footer_total_ppn.get();
       var footer_total_invoice_submit   = footer_total_invoice.get();
       var footer_dp_submit              = footer_dp.get();
@@ -551,7 +594,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
         type: "POST",
         url: "<?php echo base_url(); ?>Sales/save_sales",
         dataType: "json",
-        data: {customer_id:customer_id, no_hp:no_hp, address:address, payment_id:payment_id, sales_id:sales_id, send_date:send_date, type:type, due_date:due_date, sendtype:sendtype, footer_discount_submit:footer_discount_submit, footer_sub_total_submit:footer_sub_total_submit, footer_total_ppn_submit:footer_total_ppn_submit, footer_total_invoice_submit:footer_total_invoice_submit, footer_dp_submit:footer_dp_submit, footer_remaining_debt_submit:footer_remaining_debt_submit},
+        data: {customer_id:customer_id, no_hp:no_hp, address:address, ekspedisi:ekspedisi, payment_id:payment_id, sales_id:sales_id, send_date:send_date, type:type, due_date:due_date, sendtype:sendtype, sales_remark:sales_remark, footer_discount_submit:footer_discount_submit, footer_sub_total_submit:footer_sub_total_submit, footer_discount_nota_submit:footer_discount_nota_submit, footer_ongkir_submit:footer_ongkir_submit,  footer_total_ppn_submit:footer_total_ppn_submit, footer_total_invoice_submit:footer_total_invoice_submit, footer_dp_submit:footer_dp_submit, footer_remaining_debt_submit:footer_remaining_debt_submit},
         success : function(data){
           if (data.code == "200"){
             window.location.href = "<?php echo base_url(); ?>Sales";
@@ -579,30 +622,26 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       var discount_temp_percentage = temp_discount_percentage.get();
       var temp_modal               = $("#temp_modal").val();
       var password_cache           = $("#password_cache").val();
-      if(temp_modal > price_temp && password_cache == ""){
-        $("#password").modal();
-      }else{
-        $.ajax({
-          type: "POST",
-          url: "<?php echo base_url(); ?>Sales/insert_temp_sales",
-          dataType: "json",
-          data: {item_id:item_id, price_temp:price_temp, qty_temp:qty_temp, total_price_temp:total_price_temp, discount_temp:discount_temp, discount_temp_percentage:discount_temp_percentage},
-          success : function(data){
-            if (data.code == "200"){
-              get_temp();
-              get_total_footer();
-              clear_input();
-              Swal.fire('Saved!', '', 'success'); 
-            } else {
-              Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: data.result,
-              })
-            }
+      $.ajax({
+        type: "POST",
+        url: "<?php echo base_url(); ?>Sales/insert_temp_sales",
+        dataType: "json",
+        data: {item_id:item_id, price_temp:price_temp, qty_temp:qty_temp, total_price_temp:total_price_temp, discount_temp:discount_temp, discount_temp_percentage:discount_temp_percentage},
+        success : function(data){
+          if (data.code == "200"){
+            get_temp();
+            get_total_footer();
+            clear_input();
+            Swal.fire('Saved!', '', 'success'); 
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: data.result,
+            })
           }
-        });
-      }
+        }
+      });
     });
   });
 
@@ -678,6 +717,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       },
     });
   });
+
 
   $('#product_name').autocomplete({ 
     minLength: 2,
@@ -782,6 +822,33 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       temp_total.set(total_cal);
     }
   });
+
+
+  $("#footer_discount_nota").on("input", function(){
+    let footer_sub_total_val = footer_sub_total.get();
+    let footer_ongkir_val = footer_ongkir.get();
+    let footer_total_ppn_val = footer_total_ppn.get();
+    let footer_discount_nota_val = footer_discount_nota.get();
+    let footer_total_invoice_val = footer_sub_total_val - Number(footer_discount_nota_val) + Number(footer_ongkir_val) + Number(footer_total_ppn_val);
+    footer_total_invoice.set(footer_total_invoice_val);
+    console.log(footer_total_invoice_val);
+    footer_remaining_debt.set(footer_total_invoice_val);
+    footer_dp.set(0);
+  });
+
+
+  $("#footer_ongkir").on("input", function(){
+    let footer_sub_total_val = footer_sub_total.get();
+    let footer_ongkir_val = footer_ongkir.get();
+    let footer_total_ppn_val = footer_total_ppn.get();
+    let footer_discount_nota_val = footer_discount_nota.get();
+    let footer_total_invoice_val = footer_sub_total_val - Number(footer_discount_nota_val) + Number(footer_ongkir_val) + Number(footer_total_ppn_val);
+    footer_total_invoice.set(footer_total_invoice_val);
+    console.log(footer_total_invoice_val);
+    footer_remaining_debt.set(footer_total_invoice_val);
+    footer_dp.set(0);
+  });
+
 
   $("#ppn_check").change(function() {
     //let footer_sub_total_val = AutoNumeric.getAutoNumericElement('#footer_sub_total').get();

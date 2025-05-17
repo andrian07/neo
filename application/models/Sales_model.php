@@ -37,7 +37,7 @@ class sales_model extends CI_Model {
         $this->db->delete('temp_sales');
     }
 
-     public function delete_sales($id)
+    public function delete_sales($id)
     {
         $this->db->set('hd_sales_status','cancel');
         $this->db->where('hd_sales_id ', $id);
@@ -72,11 +72,24 @@ class sales_model extends CI_Model {
         return $result;
     }
 
-    public function search_product($keyword)
+    /*public function search_product($keyword)
     {
         $query = $this->db->query("select * from ms_product_detail where item_name like '%".$keyword."%' or item_barcode like '%".$keyword."%'");
         $result = $query->result();
         return $result;
+    }*/
+    public function search_product($keyword){
+        $search_value = explode(" ",$keyword);
+        $this->db->select('*');
+        $this->db->from('ms_product_detail');
+        if($keyword != null){
+            foreach ($search_value as $row) {
+                $this->db->where('item_name like "%'.$row.'%"');
+                $this->db->or_where('item_barcode like "%'.$row.'%"');
+            }
+        }
+        $query = $this->db->get();
+        return $query;
     }
 
     public function get_edit_temp($id, $userid)
@@ -101,7 +114,7 @@ class sales_model extends CI_Model {
     }
 
 
-     public function get_detail_sales_header($id)
+    public function get_detail_sales_header($id)
     {
         $query = $this->db->query("select * from hd_sales a, ms_customer b, ms_payment c, ms_sales d where a.hd_sales_customer = b.customer_id and a.hd_sales_payment_type = c.payment_id and a.hd_sales_sales = d.sales_id and hd_sales_id = '".$id."'");
         $result = $query->result();
@@ -116,45 +129,45 @@ class sales_model extends CI_Model {
 
     public function get_detail_sales($id)
     {
-         $query = $this->db->query("select * from hd_sales a, dt_sales b where a.hd_sales_invoice = b.dt_sales_invoice and hd_sales_id = '".$id."'");
-        $result = $query->result();
-        return $result;
-    }
+     $query = $this->db->query("select * from hd_sales a, dt_sales b where a.hd_sales_invoice = b.dt_sales_invoice and hd_sales_id = '".$id."'");
+     $result = $query->result();
+     return $result;
+ }
 
-    public function get_last_stock($product_id)
-    {
-        $query = $this->db->query("select * from ms_product_detail where item_id = '".$product_id."'");
-        $result = $query->result();
-        return $result;
-    }
+ public function get_last_stock($product_id)
+ {
+    $query = $this->db->query("select * from ms_product_detail where item_id = '".$product_id."'");
+    $result = $query->result();
+    return $result;
+}
 
-    public function get_customer_info($id)
-    {
-        $query = $this->db->query("select * from ms_customer where customer_id = '".$id."'");
-        $result = $query->result();
-        return $result;
-    }
+public function get_customer_info($id)
+{
+    $query = $this->db->query("select * from ms_customer where customer_id = '".$id."'");
+    $result = $query->result();
+    return $result;
+}
 
-    public function update_stock($product_id, $new_stock)
-    {
-        $this->db->set('item_stock', $new_stock);
-        $this->db->where('item_id', $product_id);
-        $this->db->update('ms_product_detail');
-    }
+public function update_stock($product_id, $new_stock)
+{
+    $this->db->set('item_stock', $new_stock);
+    $this->db->where('item_id', $product_id);
+    $this->db->update('ms_product_detail');
+}
 
-    public function update_stock_not_send($product_id, $new_stock_not_send)
-    {
-        $this->db->set('item_not_send', $new_stock_not_send);
-        $this->db->where('item_id', $product_id);
-        $this->db->update('ms_product_detail');
-    }
+public function update_stock_not_send($product_id, $new_stock_not_send)
+{
+    $this->db->set('item_not_send', $new_stock_not_send);
+    $this->db->where('item_id', $product_id);
+    $this->db->update('ms_product_detail');
+}
 
-    public function update_delivery_status($id)
-    {
-        $this->db->set('hd_delivery_status', 'Sudah');
-        $this->db->where('hd_sales_id ', $id);
-        $this->db->update('hd_sales');
-    }
+public function update_delivery_status($id)
+{
+    $this->db->set('hd_delivery_status', 'Sudah');
+    $this->db->where('hd_sales_id ', $id);
+    $this->db->update('hd_sales');
+}
 
 }
 

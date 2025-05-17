@@ -88,7 +88,7 @@ require DOC_ROOT_PATH . $this->config->item('footer');
       success : function(data){
         let text = "";
         for (let i = 0; i < data.length; i++) {
-          text+= '<tr onclick="popupOpen('+data[i].item_id+')"><td class="image-td"><img src="<?php echo base_url(); ?>assets/products/'+data[i].item_image+'" width="100%"></img></td><td>'+data[i].item_barcode+'<br />'+data[i].item_name+'<br /> <span class="badge badge-primary">Rp. '+rupiah(data[i].item_price_1)+'</span></td><td>'+data[i].item_stock+' '+data[i].unit_name +'</td></tr>';
+          text+= '<tr onclick="popupOpen('+data[i].item_id+')"><td class="image-td"><img src="<?php echo base_url(); ?>assets/products/'+data[i].item_image+'" style="height:150px;width:150px;"></img></td><td>'+data[i].item_barcode+'<br />'+data[i].item_name+'<br /> <span class="badge badge-primary">Rp. '+rupiah(data[i].item_price_1)+'</span></td><td>'+data[i].item_stock+' '+data[i].unit_name +'</td></tr>';
         }       
         document.getElementById("product_list").innerHTML = text;
       }

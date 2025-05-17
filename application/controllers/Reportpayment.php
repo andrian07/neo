@@ -259,7 +259,7 @@ class Reportpayment extends CI_Controller {
     public function repayment_view()
     {
     	$this->check_auth();
-    	$customer_list = $this->master_model->customer_list();
+    	$customer_list['customer_list'] = $this->master_model->customer_list();
     	$this->load->view('Pages/Report/report_repayment', $customer_list);
     }
 

@@ -9,7 +9,7 @@ require DOC_ROOT_PATH . $this->config->item('header');
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1>Laporan Pembayaran Hutang</h1>
+          <h1>Laporan Pembayaran Piutang</h1>
         </div>
         <div class="col-sm-6">
 
